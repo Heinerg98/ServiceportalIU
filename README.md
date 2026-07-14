@@ -4,7 +4,7 @@ Kurz: Dieses Repository enthält ein kleines Serviceportal (Frontend React + Bac
 
 Wichtige Hinweise (für Abgabe / Prüfung)
 
-- Demo-Daten: Das Backend enthält einen DataLoader, der beim Start Demo-Benutzer, Beispiel-Angebote und Beispiel-Anfragen einfügt. Aus Sicherheitsgründen läuft dieser Loader jetzt nur, wenn das Spring‑Profile `dev` aktiv ist. Starte das Backend mit dem Profile `dev`, um die Demo‑Daten zu erzeugen (Anleitung weiter unten).
+- Demo-Daten: Das Backend enthält einen DataLoader, der beim Start Demo-Benutzer, Beispiel-Angebote und Beispiel-Anfragen einfügt. Der DataLoader ist standardmäßig aktiv und läuft bei jedem Start der Anwendung. Wenn du ihn deaktivieren möchtest, entferne oder benenne die Klasse um (z. B. DataLoader.disabled.java) oder entferne die @Component-Annotation.
 
 - Demo-Zugangsdaten (nur Entwicklung):
   - admin / admin (ROLE_ADMIN)
@@ -18,7 +18,7 @@ Wichtige Hinweise (für Abgabe / Prüfung)
   - Authentifizierung: In der Demo wird Basic‑Auth verwendet und der Basic‑Token in `localStorage` gespeichert. Das ist nur für die lokale Entwicklung gedacht und **nicht** für Produktion.
   - CSRF: CSRF-Schutz ist für die Entwicklungsumgebung deaktiviert (siehe `SecurityConfig`). In produktiven Systemen muss CSRF aktiviert/korrekt konfiguriert werden.
   - H2 Console: Die H2-Console ist für Entwicklung verfügbar unter `/h2-console`. Nicht in Produktion aktivieren.
-  - DataLoader: Nur im `dev`-Profile aktiv. Entfernen oder schützen vor produktivem Einsatz.
+  - DataLoader: Standardmäßig aktiv. Entfernen oder schützen vor produktivem Einsatz.
 
 
 ## Schnellstart (Entwicklung)
@@ -33,9 +33,8 @@ Backend starten (mit Demo-Daten)
 ```bash
 # im Repo-Root
 cd backend
-# Demo-DataLoader nur aktiv, wenn Profile=dev
 mvn clean package -DskipTests
-mvn spring-boot:run -Dspring-boot.run.profiles=dev
+mvn spring-boot:run
 ```
 
 - H2-Konsole: http://localhost:8080/h2-console (JDBC URL z.B. `jdbc:h2:file:./backend/data/serviceportal`, Benutzer `sa`, Passwort leer)
@@ -52,7 +51,7 @@ npm run dev
 ```
 
 Fehlerbehebung / Checks
-- Logs: Prüfe Backend-Logs auf `Inserted demo user` oder `DataLoader finished` beim Start (falls du das dev-profil benutzt hast).
+- Logs: Prüfe Backend-Logs auf `Inserted demo user` oder `DataLoader finished` beim Start.
 - Browser Console: keine roten Errors
 - Prüfe font-size Debug (falls nötig):
   document.documentElement.style.getPropertyValue('--root-font-size')
@@ -61,7 +60,7 @@ Fehlerbehebung / Checks
 
 
 ## Hinweise für die Abgabe
-- Entferne vor einem produktiven oder öffentlichen Release alle Demo-Passwörter und den DataLoader oder aktiviere ihn nur lokal (wie jetzt über `dev`-Profile).
+- Entferne vor einem produktiven oder öffentlichen Release alle Demo-Passwörter und den DataLoader oder aktiviere ihn nur lokal (empfohlen).
 - Dokumentiere in deiner Abgabe, dass Auth-Mechanismus, CSRF und H2-Console für Entwicklung konfiguriert sind.
 
 
