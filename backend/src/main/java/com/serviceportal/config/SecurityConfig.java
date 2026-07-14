@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import com.serviceportal.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,9 +43,9 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/h2-console/**").permitAll()
-                .requestMatchers("/api/offers").permitAll()
-                .requestMatchers("/api/requests").permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/h2-console/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/offers/**")).permitAll()
+                .requestMatchers(new AntPathRequestMatcher("/api/requests/**")).permitAll()
                 .anyRequest().authenticated()
             )
             .httpBasic();
