@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
+// Typdefinition für Benutzerobjekte
 type User = { id: number, username: string, roles?: string }
 
+/**
+ * UsersAdmin-Komponente
+ *
+ * Beschreibung (Deutsch):
+ * - Admin-UI zur Auflistung und Bearbeitung von Benutzern.
+ * - Lädt Benutzer per GET /api/users (Admin) und erlaubt das Ändern von Rollen.
+ */
 export default function UsersAdmin(){
   const [users, setUsers] = useState<User[]>([])
   const [editingId, setEditingId] = useState<number|undefined>(undefined)

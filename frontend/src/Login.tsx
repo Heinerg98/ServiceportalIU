@@ -1,6 +1,18 @@
 import React, { useState } from 'react'
 import axios from 'axios'
 
+/**
+ * Login-Komponente
+ *
+ * Beschreibung (Deutsch):
+ * - Ein einfaches Formular für Benutzername und Passwort.
+ * - Beim erfolgreichen Login wird der Basic-Auth-Token in localStorage gespeichert
+ *   und als Default-Header in axios eingetragen, damit nachfolgende Anfragen authentifiziert werden.
+ * - Beim Logout wird der Header entfernt und localStorage geleert.
+ *
+ * Hinweis: Diese einfache Basic-Auth-Variante dient nur Entwicklungszwecken. In Produktion
+ * sollte ein sicheres Authentifizierungsverfahren (z. B. HttpOnly-Cookies, JWT mit Refresh) verwendet werden.
+ */
 export default function Login({ onAuthChange }:{ onAuthChange:(v:boolean)=>void }){
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -40,6 +52,7 @@ export default function Login({ onAuthChange }:{ onAuthChange:(v:boolean)=>void 
 
   return (
     <form onSubmit={login} style={{display:'inline-flex', gap: '0.5rem', alignItems:'center'}}>
+      {/* Visuelle Labels werden versteckt, sind aber für Screenreader vorhanden */}
       <label style={{display:'none'}}>Benutzername<input value={username} onChange={e=>setUsername(e.target.value)} /></label>
       <label style={{display:'none'}}>Passwort<input type="password" value={password} onChange={e=>setPassword(e.target.value)} /></label>
       <input aria-label="Benutzername" placeholder="Benutzer" value={username} onChange={e=>setUsername(e.target.value)} />

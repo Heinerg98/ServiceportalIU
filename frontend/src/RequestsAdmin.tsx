@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 
+// Typdefinition für ServiceRequest-Objekte
 type ServiceRequest = {
   id: number,
   requesterName: string,
@@ -10,6 +11,14 @@ type ServiceRequest = {
   createdAt?: string
 }
 
+/**
+ * RequestsAdmin-Komponente
+ *
+ * Beschreibung (Deutsch):
+ * - Admin-UI zum Anzeigen und Ändern des Status eingehender Anfragen.
+ * - Lädt die Anfragen per GET /api/requests (erfordert ADMIN-Rechte).
+ * - Ermöglicht das Setzen des Status via PUT /api/requests/{id}.
+ */
 export default function RequestsAdmin(){
   const [requests, setRequests] = useState<ServiceRequest[]>([])
   const [loading, setLoading] = useState(false)
