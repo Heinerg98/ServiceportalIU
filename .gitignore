@@ -1,0 +1,22 @@
+# Java
+target/
+*.class
+
+# Maven
+pom.xml.tag
+pom.xml.releaseBackup
+
+# Intellij
+/.idea/
+*.iml
+
+# Node
+node_modules/
+frontend/node_modules/
+frontend/dist/
+
+# H2 DB files
+backend/data/
+
+# VSCode
+.vscode/
