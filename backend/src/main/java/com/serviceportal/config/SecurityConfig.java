@@ -11,6 +11,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.http.HttpStatus;
 
 import com.serviceportal.repository.UserRepository;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -48,6 +50,7 @@ public class SecurityConfig {
                 .requestMatchers(new AntPathRequestMatcher("/api/requests/**")).permitAll()
                 .anyRequest().authenticated()
             )
+            .exceptionHandling(e -> e.authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)))
             .httpBasic();
 
         // for H2 console

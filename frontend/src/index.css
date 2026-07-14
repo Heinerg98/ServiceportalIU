@@ -1,7 +1,11 @@
+/**
+ * Accessibility variables and base styles
+ */
 :root{
   --bg: #ffffff;
   --fg: #111111;
   --accent: #0066cc;
+  --root-font-size: 16px;
 }
 
 :root[data-contrast='high']{
@@ -10,7 +14,7 @@
   --accent: #ffff00;
 }
 
-html{ font-size:16px }
+html{ font-size: var(--root-font-size, 16px) }
 body{ background:var(--bg); color:var(--fg); font-family:system-ui, Arial, sans-serif; margin:0; padding:1rem }
 a{ color:var(--accent) }
 .skip-link{ position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden }

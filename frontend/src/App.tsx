@@ -14,7 +14,11 @@ export default function App(){
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
   useEffect(()=>{ fetchOffers() },[])
-  useEffect(()=>{ document.documentElement.style.fontSize = fontSize + 'px'; localStorage.setItem('fontSize', String(fontSize)) },[fontSize])
+  useEffect(()=>{ 
+    // set CSS variable instead of directly setting style.fontSize — more robust
+    document.documentElement.style.setProperty('--root-font-size', fontSize + 'px');
+    localStorage.setItem('fontSize', String(fontSize)) 
+  },[fontSize])
   useEffect(()=>{ document.documentElement.dataset.contrast = highContrast ? 'high' : 'normal'; localStorage.setItem('highContrast', String(highContrast)) },[highContrast])
 
   useEffect(()=>{ if (authenticated) checkAdmin(); else setIsAdmin(false) },[authenticated])
