@@ -8,6 +8,14 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Controller für den Endpunkt /api/me
+ *
+ * Zweck (Deutsch):
+ * - Liefert Informationen über den aktuell authentifizierten Benutzer.
+ * - Wenn keine Authentifizierung vorhanden ist, wird eine leere Map zurückgegeben.
+ * - Rückgabe: JSON-Objekt mit 'username' und 'roles'.
+ */
 @RestController
 public class MeController {
 
