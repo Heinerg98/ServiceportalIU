@@ -7,6 +7,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
+/**
+ * DataLoader-Komponente (Entwicklung)
+ *
+ * Beschreibung (Deutsch):
+ * - Beim Start der Anwendung prüft dieser CommandLineRunner, ob bestimmte Tabellen
+ *   (app_user, offers, requests) vorhanden sind und fügt bei Bedarf Demo-Daten ein.
+ * - Die Komponente ist bewusst robust ausgelegt: sie prüft mehrere mögliche Tabellennamen
+ *   und verschiedene Spalten-Varianten, um in unterschiedlichen Schema-Varianten zu funktionieren.
+ * - Achtung: Diese Komponente ist nur für Entwicklungszwecke gedacht. Sie legt Demo-Benutzer
+ *   mit einfachen Passwörtern an (admin/admin, user/user, alice/alice123, ...). Vor dem
+ *   Produktions-Deploy muss die Komponente entfernt oder nur im 'dev'-Profil aktiviert werden.
+ */
 @Component("demoDataLoader")
 public class DataLoader implements CommandLineRunner {
 
@@ -20,11 +32,11 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Read existing tables in H2 (PUBLIC schema)
+        // Alle Tabellen der PUBLIC-Schema abfragen
         List<String> tables = jdbc.queryForList("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'", String.class);
         var lowerTables = tables.stream().map(String::toLowerCase).toList();
 
-        // 1) Ensure demo users (app_user table)
+        // 1) Demo-Benutzer einfügen (wenn app_user existiert)
         if (lowerTables.contains("app_user")) {
             try {
                 Integer cAdmin = jdbc.queryForObject("SELECT COUNT(*) FROM app_user WHERE username='admin'", Integer.class);
@@ -36,7 +48,7 @@ public class DataLoader implements CommandLineRunner {
             } catch (Exception e) {
                 System.out.println("Could not check/insert admin: " + e.getMessage());
             }
-            // Add additional demo users
+            // Zusätzliche Demo-Benutzer (Passwörter sind Beispielpasswörter für die DEV-Umgebung)
             String[][] demoUsers = new String[][]{
                 {"user","user","ROLE_USER"},
                 {"alice","alice123","ROLE_USER"},
@@ -60,7 +72,7 @@ public class DataLoader implements CommandLineRunner {
             System.out.println("app_user table not present; skipping demo user insertion");
         }
 
-        // 2) Sample offers
+        // 2) Beispiel-Angebote einfügen (verschiedene mögliche Tabellennamen prüfen)
         String offersTable = null;
         for (String t : lowerTables) {
             if (t.equals("offer") || t.equals("offers") || t.equals("service_offer") || t.equals("service_offers") || t.equals("serviceportal_offer")) {
@@ -84,7 +96,7 @@ public class DataLoader implements CommandLineRunner {
             System.out.println("No offers table found; skipping sample offers insertion");
         }
 
-        // 3) Sample requests
+        // 3) Beispiel-Anfragen einfügen; versucht mehrere Spaltenvarianten für maximale Kompatibilität
         String requestsTable = null;
         for (String t : lowerTables) {
             if (t.equals("request") || t.equals("requests") || t.equals("service_request") || t.equals("service_requests") || t.equals("serviceportal_request")) {
@@ -96,7 +108,7 @@ public class DataLoader implements CommandLineRunner {
             try {
                 Integer c = jdbc.queryForObject("SELECT COUNT(*) FROM " + requestsTable, Integer.class);
                 if (c == null || c == 0) {
-                    // Try common column variants for insertion
+                    // Versuche zuerst die häufige requester_name/requster_email-Variante
                     boolean inserted = false;
                     try {
                         jdbc.update("INSERT INTO " + requestsTable + "(requester_name, requester_email, message, status) VALUES (?,?,?,?)", "Marta Meier", "marta@example.org", "Ich benötige Unterstützung bei der Beantragung von Leistungen.", "RECEIVED");
@@ -105,6 +117,7 @@ public class DataLoader implements CommandLineRunner {
                         inserted = true;
                         System.out.println("Inserted sample requests into " + requestsTable + " (requester_name variant)");
                     } catch (Exception ex) {
+                        // Fallback: andere mögliche Spaltennamen ausprobieren
                         try {
                             jdbc.update("INSERT INTO " + requestsTable + "(requesterName, requesterEmail, message, status) VALUES (?,?,?,?)", "Marta Meier", "marta@example.org", "Ich benötige Unterstützung bei der Beantragung von Leistungen.", "RECEIVED");
                             jdbc.update("INSERT INTO " + requestsTable + "(requesterName, requesterEmail, message, status) VALUES (?,?,?,?)", "Tom Bauer", "tom@example.org", "Frage zur Dokumentenanforderung für Antrag X.", "RECEIVED");
@@ -124,7 +137,7 @@ public class DataLoader implements CommandLineRunner {
                         }
                     }
 
-                    // Additional requests inserted regardless of column variants if possible (try minimal columns)
+                    // Falls alle Insert-Versuche scheitern: Minimal-Fallback nur mit message/status
                     if (!inserted) {
                         try {
                             jdbc.update("INSERT INTO " + requestsTable + "(message, status) VALUES (?,?)", "Allgemeine Anfrage: Gibt es Hilfen?", "RECEIVED");

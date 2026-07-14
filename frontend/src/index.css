@@ -1,5 +1,10 @@
-/**
- * Accessibility variables and base styles
+/*
+ * Grundlegende CSS-Variablen und Basisstile
+ *
+ * Hinweise:
+ * - Variablen für Hintergrund/Foreground und die Root-Schriftgröße (--root-font-size)
+ * - Ein Kontrast-Theme wird über das data-attribute [data-contrast='high'] gesetzt
+ * - Die Regel für html setzt die tatsächliche font-size mittels der CSS-Variable
  */
 :root{
   --bg: #ffffff;
@@ -8,15 +13,22 @@
   --root-font-size: 16px;
 }
 
+/* hoher Kontrast: einfache, kontrastreiche Farbwerte */
 :root[data-contrast='high']{
   --bg: #000000;
   --fg: #ffffff;
   --accent: #ffff00;
 }
 
+/* Anwenden der Root-Schriftgröße über die Variable; Fallback 16px */
 html{ font-size: var(--root-font-size, 16px) }
+
+/* Grundlegende Body-/Textstile */
 body{ background:var(--bg); color:var(--fg); font-family:system-ui, Arial, sans-serif; margin:0; padding:1rem }
+
 a{ color:var(--accent) }
+
+/* Skip-Link für Tastatur-Navigation: standardmäßig ausgeblendet, bei Fokus sichtbar */
 .skip-link{ position:absolute; left:-999px; top:auto; width:1px; height:1px; overflow:hidden }
 .skip-link:focus{ left:0; top:0; width:auto; height:auto; background:yellow }
 
