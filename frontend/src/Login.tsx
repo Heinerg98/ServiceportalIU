@@ -12,8 +12,8 @@ export default function Login({ onAuthChange }:{ onAuthChange:(v:boolean)=>void 
       const token = btoa(`${username}:${password}`)
       // set header for test call
       axios.defaults.headers.common['Authorization'] = `Basic ${token}`
-      // test by calling a protected endpoint; if 200 -> ok
-      await axios.get('/api/users')
+      // test by calling a safe endpoint that returns the authenticated user (works for any valid user)
+      await axios.get('/api/me')
       localStorage.setItem('auth', token)
       setLoggedIn(true)
       onAuthChange(true)
