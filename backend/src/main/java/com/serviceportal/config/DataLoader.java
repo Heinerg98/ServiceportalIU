@@ -7,7 +7,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
 
-@Component
+@Component("demoDataLoader")
 public class DataLoader implements CommandLineRunner {
 
     private final JdbcTemplate jdbc;
