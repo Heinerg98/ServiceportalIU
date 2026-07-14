@@ -50,22 +50,4 @@ npm run dev
 # öffne http://localhost:5173
 ```
 
-Fehlerbehebung / Checks
-- Logs: Prüfe Backend-Logs auf `Inserted demo user` oder `DataLoader finished` beim Start.
-- Browser Console: keine roten Errors
-- Prüfe font-size Debug (falls nötig):
-  document.documentElement.style.getPropertyValue('--root-font-size')
-  window.getComputedStyle(document.documentElement).fontSize
-  localStorage.getItem('fontSize')
 
-
-## Hinweise für die Abgabe
-- Entferne vor einem produktiven oder öffentlichen Release alle Demo-Passwörter und den DataLoader oder aktiviere ihn nur lokal (empfohlen).
-- Dokumentiere in deiner Abgabe, dass Auth-Mechanismus, CSRF und H2-Console für Entwicklung konfiguriert sind.
-
-
-## Dateien mit Kommentaren
-- Viele Backend- und Frontend-Dateien enthalten deutschsprachige Inline-Kommentare, die die Architektur und wichtige Entscheidungen erklären. Schau dir insbesondere `backend/src/main/java/com/serviceportal` und `frontend/src` an.
-
-
-Wenn du möchtest, passe ich den DataLoader so an, dass er stattdessen ein SQL‑Seed‑Skript erzeugt oder nur Offers/Requests legt (keine Benutzer). Sag kurz Bescheid, falls du das bevorzugst.
