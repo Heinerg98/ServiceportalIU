@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import './App.css'
 import Login from './Login'
+import AdminPanel from './AdminPanel'
 
 type Offer = { id: number, title: string, description: string }
 
@@ -66,6 +67,9 @@ export default function App(){
           {isAdmin && <div>
             <strong>Admin Controls:</strong>
             <button onClick={createOffer}>Angebot erstellen</button>
+            <div style={{marginTop:8}}>
+              <AdminPanel />
+            </div>
           </div>}
           <ul>
             {offers.map(o => (
