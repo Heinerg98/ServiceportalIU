@@ -6,18 +6,28 @@ import AdminPanel from './AdminPanel'
 
 type Offer = { id: number, title: string, description: string }
 
+function parseInitialFont(){
+  const raw = localStorage.getItem('fontSize')
+  if(!raw) return 16
+  const parsed = parseInt(raw)
+  return Number.isFinite(parsed) ? parsed : 16
+}
+
 export default function App(){
   const [offers, setOffers] = useState<Offer[]>([])
-  const [fontSize, setFontSize] = useState<number>(parseInt(localStorage.getItem('fontSize')||'16'))
+  const [fontSize, setFontSize] = useState<number>(parseInitialFont())
   const [highContrast, setHighContrast] = useState<boolean>(localStorage.getItem('highContrast')==='true')
   const [authenticated, setAuthenticated] = useState<boolean>(!!localStorage.getItem('auth'))
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
 
   useEffect(()=>{ fetchOffers() },[])
   useEffect(()=>{ 
-    // set CSS variable instead of directly setting style.fontSize — more robust
-    document.documentElement.style.setProperty('--root-font-size', fontSize + 'px');
-    localStorage.setItem('fontSize', String(fontSize)) 
+    // ensure we never set an invalid value like "NaNpx" into the CSS variable
+    const safeFont = Number.isFinite(fontSize) ? Math.round(fontSize) : 16
+    // set CSS variable and an inline fallback for robustness
+    document.documentElement.style.setProperty('--root-font-size', safeFont + 'px')
+    document.documentElement.style.fontSize = safeFont + 'px'
+    localStorage.setItem('fontSize', String(safeFont)) 
   },[fontSize])
   useEffect(()=>{ document.documentElement.dataset.contrast = highContrast ? 'high' : 'normal'; localStorage.setItem('highContrast', String(highContrast)) },[highContrast])
 
@@ -51,9 +61,9 @@ export default function App(){
         <h1>Serviceportal</h1>
         <div className="access-controls">
           <label>Schriftgröße: 
-            <button onClick={()=>setFontSize(s=>Math.max(12,s-1))} aria-label="kleiner">A-</button>
+            <button type="button" onClick={()=>setFontSize(s=>Math.max(12,typeof s==='number'?s-1:16))} aria-label="kleiner">A-</button>
             <span aria-live="polite"> {fontSize}px </span>
-            <button onClick={()=>setFontSize(s=>Math.min(24,s+1))} aria-label="größer">A+</button>
+            <button type="button" onClick={()=>setFontSize(s=>Math.min(24,typeof s==='number'?s+1:16))} aria-label="größer">A+</button>
           </label>
           <label>
             <input type="checkbox" checked={highContrast} onChange={e=>setHighContrast(e.target.checked)} />
@@ -70,7 +80,7 @@ export default function App(){
           <h2 id="offers-title">Angebote</h2>
           {isAdmin && <div>
             <strong>Admin Controls:</strong>
-            <button onClick={createOffer}>Angebot erstellen</button>
+            <button type="button" onClick={createOffer}>Angebot erstellen</button>
             <div style={{marginTop:8}}>
               <AdminPanel />
             </div>
