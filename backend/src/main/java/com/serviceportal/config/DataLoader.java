@@ -1,6 +1,7 @@
 package com.serviceportal.config;
 
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -16,10 +17,13 @@ import java.util.List;
  * - Die Komponente ist bewusst robust ausgelegt: sie prüft mehrere mögliche Tabellennamen
  *   und verschiedene Spalten-Varianten, um in unterschiedlichen Schema-Varianten zu funktionieren.
  * - Achtung: Diese Komponente ist nur für Entwicklungszwecke gedacht. Sie legt Demo-Benutzer
- *   mit einfachen Passwörtern an (admin/admin, user/user, alice/alice123, ...). Vor dem
- *   Produktions-Deploy muss die Komponente entfernt oder nur im 'dev'-Profil aktiviert werden.
+ *   mit einfachen Passwörtern an (admin/admin, user/user, alice/alice123, ...). Sie ist
+ *   deshalb auf das Spring-Profile "dev" beschränkt. Starte das Backend mit dem dev-Profile,
+ *   um die Demo-Daten zu erzeugen:
+ *     mvn spring-boot:run -Dspring-boot.run.profiles=dev
  */
 @Component("demoDataLoader")
+@Profile("dev")
 public class DataLoader implements CommandLineRunner {
 
     private final JdbcTemplate jdbc;
